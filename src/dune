@@ -1,0 +1,14 @@
+(library
+ (name openai)
+ (public_name openai)
+ (modules
+  (:standard \ test))
+ (private_modules basic json)
+ (libraries ezcurl-lwt yojson)
+ (preprocess
+  (pps ppx_yojson_conv ppx_yojson lwt_ppx)))
+
+(test
+ (name test)
+ (libraries openai)
+ (modules test))
