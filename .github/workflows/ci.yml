@@ -1,0 +1,32 @@
+name: CI on Nix
+
+on:
+  pull_request:
+  push:
+    tags-ignore:
+      - "**"
+    branches:
+      - "**"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout tree
+        uses: actions/checkout@v3
+      - uses: cachix/install-nix-action@v15
+        with:
+          extra_nix_config: |
+            max-jobs = auto
+            cores = 0
+      # Use cachix
+      # see https://nix.dev/tutorials/continuous-integration-github-actions#caching-builds-using-cachix
+      # - uses: cachix/cachix-action@v12
+        # with:
+          # name: nymphium-grpc-ocaml
+          # authToken: '${{ secrets.CACHIX_SIGNING_KEY }}'
+      - name: Check nix
+        run: nix develop -c true
+      - name: Run tests
+        run: |
+          nix develop -c dune build

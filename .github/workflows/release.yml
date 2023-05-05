@@ -1,0 +1,66 @@
+name: Release
+
+on:
+  push:
+    branches-ignore:
+      - "**"
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+"
+
+permissions: write-all
+env:
+  OCAML_COMPILER: "5.0"
+  GIT_EMAIL: "s1311350@gmail.com"
+  GIT_NAME: "Satoru Kawahara"
+  GITHUB_ID: "Nymphium"
+  GITHUB_REPO_NAME: "openai-ocaml"
+  GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Release
+        uses: softprops/action-gh-release@v1
+
+  publish:
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout tree
+        uses: actions/checkout@v3
+      - run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+      - name: Set-up OCaml
+        uses: ocaml/setup-ocaml@v2
+        with:
+          ocaml-compiler: ${{ env.OCAML_COMPILER }}
+      - name: Install deps
+        run: |
+          git config --global user.email "${{ env.GIT_EMAIL }}"
+          git config --global user.name "${{ env.GIT_NAME }}"
+          git config --global url."https://github.com/".pushInsteadOf "git@github.com:"
+          echo "machine github.com login ${{ env.GITHUB_ID }} password ${{ env.GITHUB_TOKEN }}" > ~/.netrc
+          opam install dune-release -y
+          mkdir -p $HOME/git
+          git clone https://github.com/ocaml/opam-repository $HOME/git/opam-repository
+          mkdir -p $HOME/.config/dune
+          cat <<EOL > $HOME/.config/dune/release.yml
+          remote: https://github.com/${{ env.GITHUB_ID }}/opam-repository
+          local: $HOME/git/opam-repository
+          EOL
+      - name: Build release contents
+        run: |
+          opam exec -- dune-release distrib --skip-lint --skip-build
+          opam exec -- dune-release opam pkg
+      - name: Upload tgz
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ env.GITHUB_TOKEN }}
+          file: _build/${{ env.GITHUB_REPO_NAME }}-${{ env.RELEASE_VERSION }}.tbz
+          asset_name: openai-ocaml-${{ env.RELEASE_VERSION }}.tbz
+          tag: ${{ github.ref }}
+      - name: Submit
+        run: |
+          opam exec -- dune-release opam submit -y --no-auto-open --token ${{ env.GITHUB_TOKEN }}
