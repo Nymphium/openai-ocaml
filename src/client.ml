@@ -14,3 +14,14 @@ let create api_url api_key (model:string)=
   ; model
   }
 ;;
+let create_init =
+  let base_url = "" in
+  let model = "" in
+  let api_key = "" in
+  {
+    api_key
+  ; gen_url = ( ^ ) base_url
+  ; c = Ezcurl_lwt.make ()
+  ; model
+  }
+;;
