@@ -5,7 +5,7 @@ open Basic.Audio
 let send
   (client : Client.t)
   ~(file : Basic.file_format)
-  ?(model = "whisper-1")
+  ?(model = client.model)
   ?prompt
   ?(response_format = `Json)
   ?temperature

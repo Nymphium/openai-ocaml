@@ -2,7 +2,7 @@ let endpoint = "/v1/edits"
 
 let send
   (client : Client.t)
-  ?(model = "text-davinci-edit-001")
+  ?(model = client.model)
   ?input
   ~instruction
   ?n

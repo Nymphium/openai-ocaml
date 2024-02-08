@@ -2,7 +2,7 @@ let endpoint = "/v1/completions"
 
 let send
   (client : Client.t)
-  ?(model = "gpt-3.5-turbo")
+  ?(model = client.model)
   ?max_tokens
   ?prompt
   ?suffix
