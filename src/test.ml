@@ -2,7 +2,8 @@ open Openai
 
 let run () =
   let api_key = Sys.getenv "OPENAI_API_KEY" in
-  let client = Client.create api_key in
+  let api_url = Sys.getenv "OPENAI_API_URL" in
+  let client = Client.create api_url api_key in
   ignore
   @@ Lwt_main.run
   @@ Lwt.bind
