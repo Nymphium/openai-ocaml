@@ -4,7 +4,7 @@ type t =
   ; c : Curl.t
   }
 
-let create api_key =
-  let base_url = "https://api.openai.com" in
+let create api_url api_key =
+  let base_url = api_url in
   { api_key; gen_url = ( ^ ) base_url; c = Ezcurl_lwt.make () }
 ;;
