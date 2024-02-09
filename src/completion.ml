@@ -2,7 +2,7 @@ let endpoint = "/v1/completions"
 
 let send
   (client : Client.t)
-  ?(model = "gpt-3.5-turbo")
+  ?(model = client.model)
   ?max_tokens
   ?prompt
   ?suffix
@@ -68,7 +68,7 @@ let send
       ~client:client.c
       ~headers
       ~content:(`String body)
-      ~url:(client.gen_url endpoint)
+      ~url:(client.url ^ endpoint)
       ~params:[]
       ()
   in

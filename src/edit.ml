@@ -2,7 +2,7 @@ let endpoint = "/v1/edits"
 
 let send
   (client : Client.t)
-  ?(model = "text-davinci-edit-001")
+  ?(model = client.model)
   ?input
   ~instruction
   ?n
@@ -36,7 +36,7 @@ let send
       ~client:client.c
       ~headers
       ~content:(`String body)
-      ~url:(client.gen_url endpoint)
+      ~url:(client.url ^ endpoint)
       ~params:[]
       ()
   in

@@ -1,6 +1,6 @@
 let endpoint = "/v1/embeddings"
 
-let send (client : Client.t) ?(model = "text-embedding-ada-002") ~input ?user () =
+let send (client : Client.t) ?(model = client.model) ~input ?user () =
   let user = Json.to_field_opt "user" (fun x -> `String x) user in
   let body =
     List.filter
@@ -18,7 +18,7 @@ let send (client : Client.t) ?(model = "text-embedding-ada-002") ~input ?user ()
       ~client:client.c
       ~headers
       ~content:(`String body)
-      ~url:(client.gen_url endpoint)
+      ~url:(client.url ^ endpoint)
       ~params:[]
       ()
   in
