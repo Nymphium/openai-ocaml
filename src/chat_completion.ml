@@ -80,7 +80,7 @@ let send_raw_k
       ~client:client.c
       ~headers
       ~content:(`String body)
-      ~url:(client.gen_url endpoint)
+      ~url:(client.url ^ endpoint)
       ~params:[]
       ()
   in

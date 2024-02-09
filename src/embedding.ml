@@ -18,7 +18,7 @@ let send (client : Client.t) ?(model = client.model) ~input ?user () =
       ~client:client.c
       ~headers
       ~content:(`String body)
-      ~url:(client.gen_url endpoint)
+      ~url:(client.url ^ endpoint)
       ~params:[]
       ()
   in
