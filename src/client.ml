@@ -25,3 +25,6 @@ let create_init =
   ; model
   }
 ;;
+let create_custom api_key base_url=
+  { api_key; gen_url = ( ^ ) base_url; c = Ezcurl_lwt.make () }
+;;
